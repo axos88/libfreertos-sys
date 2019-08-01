@@ -1,0 +1,7 @@
+[target.thumbv7m-none-eabi]
+# uncomment this to make `cargo run` execute programs on QEMU
+ runner = "/bin/echo Can't run a library"
+
+
+[build]
+target = "thumbv7m-none-eabi"    # Cortex-M3
