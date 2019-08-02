@@ -10,10 +10,10 @@ pub const errCOULD_NOT_ALLOCATE_REQUIRED_MEMORY: i32 = -1;
 pub const errNO_TASK_TO_RUN: i32 = -2;
 pub const errQUEUE_BLOCKED: i32 = -4;
 pub const errQUEUE_YIELD: i32 = -5;
-pub const configUSE_PREEMPTION: u32 = 0;
+pub const configUSE_PREEMPTION: u32 = 1;
 pub const configUSE_IDLE_HOOK: u32 = 1;
 pub const configUSE_TICK_HOOK: u32 = 1;
-pub const configMAX_TASK_NAME_LEN: u32 = 4;
+pub const configMAX_TASK_NAME_LEN: u32 = 0;
 pub const configUSE_TRACE_FACILITY: u32 = 0;
 pub const configUSE_16_BIT_TICKS: u32 = 0;
 pub const configIDLE_SHOULD_YIELD: u32 = 1;
@@ -1960,5 +1960,13 @@ extern "C" {
 
 pub mod c_types {
     pub type c_int = i32;
+    pub type c_uint = u32;
+    pub type c_ulong = u32;
+    pub type c_ushort = u16;
+    pub type c_short = i16;
+    pub type c_schar = i8;
+    pub type c_char = i8;
+    pub type c_long = i32;
+    pub type c_longlong = i64;
     pub enum c_void {}
 }

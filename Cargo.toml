@@ -6,8 +6,9 @@ edition = "2018"
 
 
 [features]
-default = []
-foo = []
+default = ["preemption"]
+preemption = []
+named_tasks = []
 
 [dependencies]
 cortex-m = "0.6.0"

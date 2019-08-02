@@ -97,7 +97,7 @@ static void prvSetupTimerInterrupt( void );
 /*
  * Exception handlers.
  */
-void xPortPendSVHandler( void ) __attribute__ (( naked ));
+void PendSV( void ) __attribute__ (( naked ));
 void xPortSysTickHandler( void );
 void vPortSVCHandler( void ) __attribute__ (( naked ));
 
@@ -129,7 +129,9 @@ portSTACK_TYPE *pxPortInitialiseStack( portSTACK_TYPE *pxTopOfStack, pdTASK_CODE
 }
 /*-----------------------------------------------------------*/
 
-void vPortSVCHandler( void )
+void SVCall( void ) __attribute__ (( naked ));
+
+void SVCall( void )
 {
 	__asm volatile (
 					"	ldr	r3, pxCurrentTCBConst2		\n" /* Restore the context. */
@@ -215,7 +217,7 @@ void vPortExitCritical( void )
 }
 /*-----------------------------------------------------------*/
 
-void xPortPendSVHandler( void )
+void PendSV( void )
 {
 	/* This is a naked function. */
 
