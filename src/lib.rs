@@ -4,12 +4,13 @@
 #![feature(linkage)]
 #![feature(naked_functions)]
 
+#![allow(non_snake_case)]
+
 extern crate alloc;
 
 mod bindings;
 
 pub use bindings::*;
-use core::ffi::c_void;
 use alloc::alloc::Global;
 use core::alloc::{Alloc, Layout};
 use core::ptr::NonNull;
@@ -66,7 +67,7 @@ pub extern fn vApplicationIdleHook() {
 
 
 #[no_mangle]
-unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
+pub unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
     //We actually need to allocate a bit more space so that we can save the allocation size, the default allocator is picky about getting that number back.
     let ptr = Global.alloc(Layout::from_size_align_unchecked(sz+size_of::<usize>(), 4)).unwrap().as_ptr();
     *(ptr as *mut usize) = sz;
@@ -75,7 +76,7 @@ unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
 }
 
 #[no_mangle]
-unsafe extern fn vPortFree(ptr: *mut u8) {
+pub unsafe extern fn vPortFree(ptr: *mut u8) {
     //Let's hope we are trying to free a pointer that was allocated by pvPortMalloc!
     let ptr = ptr.offset(-1 *  size_of::<usize>() as isize);
     let sz = *(ptr as *mut usize);
