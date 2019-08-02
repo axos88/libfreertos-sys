@@ -6,7 +6,7 @@ edition = "2018"
 
 
 [features]
-default = ["preemption", "tick_rate_hz_100", "max_priorities_5", "static_allocation", "dynamic_allocation", "malloc_failed_hook", "named_tasks_16"]
+default = ["preemption", "tick_rate_hz_100", "max_priorities_5", "static_allocation", "dynamic_allocation", "named_tasks_16"]
 preemption = []
 tickless = []
 tick_rate_hz_100 = []
@@ -24,9 +24,10 @@ dynamic_allocation = []
 idle_hook = []
 tick_hook = []
 check_stack_overflow = []
-malloc_failed_hook = []
 daemon_hook = []
 timers = []
+
+weak_hooks = [] # Generate weak hooks that can be overridden in the application. Is there any real use case when we want to have the feature enabled, but not actually define the hooks in the application?
 
 port_cm3 = []
 port_cm0 = []

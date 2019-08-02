@@ -24,43 +24,41 @@ extern "C" {
 }
 
 
+// This needs to be called without modifying the stack
+// Turning this into naked it should basically compiles to a branch instruction (remember goto?)
 #[naked]
 #[exception]
-fn PendSV() {
-    unsafe { xPortPendSVHandler() };
-}
+unsafe fn PendSV() { xPortPendSVHandler() }
 
-#[exception]
-fn SysTick() {
-    unsafe { xPortSysTickHandler() };
-}
-
+// This needs to be called without modifying the stack
+// Turning this into naked it should basically compiles to a branch instruction (remember goto?)
 #[naked]
 #[exception]
-fn SVCall() {
-    unsafe { vPortSVCHandler() };
-}
+unsafe fn SVCall() { vPortSVCHandler() }
 
-#[cfg(feature = "tick_hook")]
+#[exception]
+unsafe fn SysTick() { xPortSysTickHandler() }
+
+#[cfg(all(feature = "tick_hook", feature = "weak_hooks"))]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationTickHook() {
 }
 
-#[cfg(feature = "check_stack_overflow")]
+#[cfg(all(feature = "check_stack_overflow", feature = "weak_hooks"))]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationStackOverflowHook() {
 }
 
-#[cfg(feature = "malloc_failed_hook")]
+#[cfg(all(feature = "malloc_failed_hook", feature = "weak_hooks"))]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationMallocFailedHook() {
 }
 
 
-#[cfg(feature = "idle_hook")]
+#[cfg(all(feature = "idle_hook", feature = "weak_hooks"))]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationIdleHook() {
@@ -69,6 +67,7 @@ pub extern fn vApplicationIdleHook() {
 
 #[no_mangle]
 unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
+    //We actually need to allocate a bit more space so that we can save the allocation size, the default allocator is picky about getting that number back.
     let ptr = Global.alloc(Layout::from_size_align_unchecked(sz+size_of::<usize>(), 4)).unwrap().as_ptr();
     *(ptr as *mut usize) = sz;
 
@@ -77,6 +76,7 @@ unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
 
 #[no_mangle]
 unsafe extern fn vPortFree(ptr: *mut u8) {
+    //Let's hope we are trying to free a pointer that was allocated by pvPortMalloc!
     let ptr = ptr.offset(-1 *  size_of::<usize>() as isize);
     let sz = *(ptr as *mut usize);
 

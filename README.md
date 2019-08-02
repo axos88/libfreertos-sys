@@ -6,5 +6,7 @@ Conditional inclusion of portable files and generation of configuration file of 
 Only the ones interesting for me have been implemented, but adding new ones should be straight-forward based on the
 existing examples.
 
-PRs are welcome!
+(!) As of Rust 1.36.0, this requires nightly to compile
+
+## PRs are welcome!
 
