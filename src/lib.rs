@@ -2,6 +2,7 @@
 
 #![feature(allocator_api)]
 #![feature(linkage)]
+#![feature(naked_functions)]
 
 extern crate alloc;
 
@@ -23,44 +24,51 @@ extern "C" {
 }
 
 
-//#[exception]
-//fn PendSV() {
-//    unsafe { xPortPendSVHandler() };
-//}
+#[naked]
+#[exception]
+fn PendSV() {
+    unsafe { xPortPendSVHandler() };
+}
 
 #[exception]
 fn SysTick() {
     unsafe { xPortSysTickHandler() };
 }
 
-//#[exception]
-//fn SVCall() {
-//    unsafe { vPortSVCHandler() };
-//}
+#[naked]
+#[exception]
+fn SVCall() {
+    unsafe { vPortSVCHandler() };
+}
 
+#[cfg(feature = "tick_hook")]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationTickHook() {
 }
 
+#[cfg(feature = "check_stack_overflow")]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationStackOverflowHook() {
 }
 
+#[cfg(feature = "malloc_failed_hook")]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationMallocFailedHook() {
 }
 
 
+#[cfg(feature = "idle_hook")]
 #[linkage = "weak"]
 #[no_mangle]
 pub extern fn vApplicationIdleHook() {
 }
 
+
 #[no_mangle]
-unsafe extern fn malloc(sz: usize) -> *mut u8 {
+unsafe extern fn pvPortMalloc(sz: usize) -> *mut u8 {
     let ptr = Global.alloc(Layout::from_size_align_unchecked(sz+size_of::<usize>(), 4)).unwrap().as_ptr();
     *(ptr as *mut usize) = sz;
 
@@ -68,7 +76,7 @@ unsafe extern fn malloc(sz: usize) -> *mut u8 {
 }
 
 #[no_mangle]
-unsafe extern fn free(ptr: *mut u8) {
+unsafe extern fn vPortFree(ptr: *mut u8) {
     let ptr = ptr.offset(-1 *  size_of::<usize>() as isize);
     let sz = *(ptr as *mut usize);
 

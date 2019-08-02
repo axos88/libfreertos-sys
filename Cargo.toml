@@ -6,9 +6,30 @@ edition = "2018"
 
 
 [features]
-default = ["preemption"]
+default = ["preemption", "tick_rate_hz_100", "max_priorities_5", "static_allocation", "dynamic_allocation", "malloc_failed_hook", "named_tasks_16"]
 preemption = []
-named_tasks = []
+tickless = []
+tick_rate_hz_100 = []
+tick_rate_hz_250 = []
+max_priorities_5 = []
+named_tasks_16 = []
+named_tasks_32 = []
+named_tasks_256 = []
+mutextes = []
+recursive_mutexes = []
+counting_semaphore = []
+alternative_api = []
+static_allocation = []
+dynamic_allocation = []
+idle_hook = []
+tick_hook = []
+check_stack_overflow = []
+malloc_failed_hook = []
+daemon_hook = []
+timers = []
+
+port_cm3 = []
+port_cm0 = []
 
 [dependencies]
 cortex-m = "0.6.0"
